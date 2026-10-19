@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="only light">
+<meta name="supported-color-schemes" content="light">
+<meta name="theme-color" content="#1e2433">
 <title>Wikipedia 25 años</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,12 +22,13 @@
   --crema: #fdf8e6;
   --nube: #f8eba9;
   --serif: "EB Garamond", "Garamond", Georgia, serif;
-  --sans: "Helvetica Neue", Helvetica, "Archivo", Arial, sans-serif;
+  --sans: "Archivo", Arial, sans-serif;
   --w: min(300px, calc((100vw - 64px) / 3));
   --h: 640px;
-  color-scheme: dark;
+  color-scheme: only light;
 }
 html, body { min-height: 100%; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 body { margin: 0; }
 img { max-width: 100%; }
 body {
@@ -42,10 +46,13 @@ body {
   padding-block: 28px;
   transition: padding .9s cubic-bezier(.6,.05,.2,1);
 }
-.camera { transform-style: preserve-3d; }
+/* Recortar fuera del árbol con perspectiva evita aplanar las solapas en Android. */
+.viewport { overflow: hidden; }
+.camera { -webkit-transform-style: preserve-3d; transform-style: preserve-3d; }
 .tri {
   position: relative;
   width: var(--w); height: var(--h);
+  -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
   transition: transform 1s cubic-bezier(.6,.05,.2,1);
 }
@@ -53,6 +60,7 @@ body {
 .flap {
   position: absolute; top: 0;
   width: var(--w); height: var(--h);
+  -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
   transition: transform 1s cubic-bezier(.6,.05,.2,1);
 }
@@ -63,11 +71,13 @@ body {
 
 .face {
   position: absolute; inset: 0;
+  box-sizing: border-box;
+  transform: translateZ(.1px);
   backface-visibility: hidden; -webkit-backface-visibility: hidden;
   overflow: hidden;
   display: flex; flex-direction: column;
 }
-.flap .back, .tri > .contra { transform: rotateY(180deg); }
+.flap .back, .tri > .contra { transform: rotateY(180deg) translateZ(.1px); }
 .tri > .face { box-shadow: 0 30px 60px -20px rgba(0,0,0,.65); }
 
 /* ---------- interior: crema con nubes amarillas ---------- */
@@ -127,9 +137,10 @@ button:focus-visible, .cover:focus-visible { outline: 2px solid var(--naranja); 
 @media (max-width: 899px) {
   :root { --w: min(360px, calc(100vw - 48px)); --h: 720px; }
   body { padding-inline: max(12px, env(safe-area-inset-left, 0px)) max(12px, env(safe-area-inset-right, 0px)); }
-  .stage { overflow: hidden; padding-block: 24px; perspective: 2400px; }
+  .stage { padding-block: 24px; perspective: 2400px; }
   .camera {
     width: var(--w); height: var(--h); flex: 0 0 var(--w);
+    -webkit-transform-style: preserve-3d;
     transform-style: preserve-3d;
     transform: scale(var(--zoom, 1)) translateX(var(--pan, 0%));
     transition: transform 650ms cubic-bezier(.4,0,.2,1);
@@ -175,6 +186,7 @@ button:focus-visible, .cover:focus-visible { outline: 2px solid var(--naranja); 
 
 </head>
 <body>
+<div class="viewport">
 <div class="stage" id="stage">
   <div class="camera"><div class="tri">
     <!-- centro adentro: Era 2 -->
@@ -232,6 +244,7 @@ button:focus-visible, .cover:focus-visible { outline: 2px solid var(--naranja); 
   </div>
 </div>
 
+</div>
 </div>
 <div class="controls">
   <div class="page-status" id="page-status" role="status" aria-live="polite">Tapa</div>
